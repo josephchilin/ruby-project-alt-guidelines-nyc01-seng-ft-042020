@@ -1,3 +1,3 @@
 require_relative '../config/environment'
 
-puts "Food is life"
+puts "Food is life test"
