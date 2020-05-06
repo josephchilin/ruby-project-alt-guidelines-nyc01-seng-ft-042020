@@ -106,6 +106,18 @@ class CommandLineInterface
         end
     end
 
+
+#---INGREDIENTS HELPER METHODS
+    def all_ingredients
+        Ingredient.all.map do |ingredient|
+            ingredient.name 
+        end
+    end
+
+    def ingredient_instance(ingredient_name)
+        Ingredient.find_by name: ingredient_name
+    end
+
 #---MENU OPTIONS
     def view_recipes
         prompt = TTY::Prompt.new
@@ -120,19 +132,46 @@ class CommandLineInterface
     def add_recipe
         prompt = TTY::Prompt.new
         recipe_name = prompt.ask("What is the name of your recipe?")
+        Recipe.create(name: recipe_name, instruction: nil)
+        add_ingredient
         recipe_instruction = prompt.ask("How do you cook #{recipe_name}?")
+        Recipe.last.update(name: recipe_name, instruction: recipe_instruction)
+binding.pry
         puts "Thanks for submitting a recipe for #{recipe_name}!"
         puts "\n"
-        Recipe.create(name: recipe_name, instruction: recipe_instruction)
+
         nav_menu
         # print "ADD RECIPE"
         # Recipe.create(name: "Fried Rice", instruction: "You make fried rice by frying rice.")
         # Ingredient.create(name: "rice")
         # RecipeIngredient.create(recipe: r1, ingredient: i3, ingredient_quantity: "4")
     end
+# NEED ARRAY OF ALL INGREDIENT NAMES TO REFERENCE
+# SHOVEL INGREDIENT OBJECT INTO LAST RECIPE OBJECT
+    def add_ingredient
+        prompt = TTY::Prompt.new
+        ingredient = prompt.ask("What is your recipe's first ingredient?")
+        
+        if all_ingredients.include?(ingredient)
+            new_recipe_ingredient = ingredient_instance(ingredient)
+            Recipe.last.ingredients << new_recipe_ingredient
+        else
+            new_recipe_ingredient =  Ingredient.create(name: ingredient)
+            Recipe.last.ingredients << new_recipe_ingredient
+        end
+
+    # build more ingredients loop
+
+    end
+    # Recipe.ingredients = 
+    # def add_ingredient(new_ingredient)
+    #     Ingredient.new 
+    # end
+
 
     def edit_recipe
         "EDIT RECIPE"
+        # .update
     end
 
     def delete_recipe
@@ -146,13 +185,13 @@ class CommandLineInterface
             puts "\n"
             current_recipe.delete
             main_menu
-
         else
             puts "Recipe: #{@recipe_choice} has not been deleted."
             puts "\n"
             nav_menu
         end
     end
+
     def quit_program
         exit
     end
