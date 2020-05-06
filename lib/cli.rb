@@ -3,7 +3,7 @@ require_relative '../lib/ingredient'
 require_relative '../lib/recipe'
 require_relative '../lib/recipe_ingredient'
 
-# As a user, I want to add a new recipe. (create)
+# As a user, I want to add a new recipe. (create) DONE
 # As a user, I want to read recipes. (read) DONE
 # As a user, I want to update my recipe. (update)
 # As a user, I want to delete my recipe. (delete) DONE
@@ -11,6 +11,8 @@ require_relative '../lib/recipe_ingredient'
 # Recipe (name, instruction)
 # RecipeIngredient (recipe_id, ingredient_id, ingredient_quantity)
 # Ingredient (name)
+
+
 class CommandLineInterface
 
     def greet
@@ -118,7 +120,9 @@ class CommandLineInterface
         Ingredient.find_by name: ingredient_name
     end
 
-#---MENU OPTIONS
+#===MENU OPTIONS======
+
+#===VIEW RECIPES======
     def view_recipes
         prompt = TTY::Prompt.new
         @recipe_choice = prompt.select("Choose Your recipe", all_recipes)
@@ -129,6 +133,11 @@ class CommandLineInterface
         nav_menu
     end
 
+# Recipe.create(name: "Fried Rice", instruction: "You make fried rice by frying rice.")
+# Ingredient.create(name: "rice")
+# RecipeIngredient.create(recipe: r1, ingredient: i3, ingredient_quantity: "4")
+    
+#===ADD RECIPE===
     def add_recipe
         prompt = TTY::Prompt.new
         recipe_name = prompt.ask("What is the name of your recipe?")
@@ -136,22 +145,17 @@ class CommandLineInterface
         add_ingredient
         recipe_instruction = prompt.ask("How do you cook #{recipe_name}?")
         Recipe.last.update(name: recipe_name, instruction: recipe_instruction)
-binding.pry
+# binding.pry
         puts "Thanks for submitting a recipe for #{recipe_name}!"
         puts "\n"
-
+    @recipe_choice = recipe_name
         nav_menu
-        # print "ADD RECIPE"
-        # Recipe.create(name: "Fried Rice", instruction: "You make fried rice by frying rice.")
-        # Ingredient.create(name: "rice")
-        # RecipeIngredient.create(recipe: r1, ingredient: i3, ingredient_quantity: "4")
     end
+
 # NEED ARRAY OF ALL INGREDIENT NAMES TO REFERENCE
 # SHOVEL INGREDIENT OBJECT INTO LAST RECIPE OBJECT
-    def add_ingredient
-        prompt = TTY::Prompt.new
-        ingredient = prompt.ask("What is your recipe's first ingredient?")
-        
+
+    def ingredient_logic(ingredient)
         if all_ingredients.include?(ingredient)
             new_recipe_ingredient = ingredient_instance(ingredient)
             Recipe.last.ingredients << new_recipe_ingredient
@@ -159,28 +163,49 @@ binding.pry
             new_recipe_ingredient =  Ingredient.create(name: ingredient)
             Recipe.last.ingredients << new_recipe_ingredient
         end
+    end
+#===ADD INGREDIENT HELPER==========
+    def add_ingredient
+        prompt = TTY::Prompt.new
+        ingredient = prompt.ask("What is your recipe's first ingredient?")
+
+        ingredient_logic(ingredient)
+        # if all_ingredients.include?(ingredient)
+        #     new_recipe_ingredient = ingredient_instance(ingredient)
+        #     Recipe.last.ingredients << new_recipe_ingredient
+        # else
+        #     new_recipe_ingredient =  Ingredient.create(name: ingredient)
+        #     Recipe.last.ingredients << new_recipe_ingredient
+        # end
 
     # build more ingredients loop
+        loop do
+         more_ingredients = prompt.yes?("Does your recipe have more ingredients?")
+        
+            if more_ingredients #=> true
+            ingredient = prompt.ask("What is your recipe's next ingredient?")
 
+            ingredient_logic(ingredient)
+            else
+                break
+            end
+        end
     end
-    # Recipe.ingredients = 
-    # def add_ingredient(new_ingredient)
-    #     Ingredient.new 
-    # end
 
-
+#===EDIT RECIPE========
     def edit_recipe
         "EDIT RECIPE"
         # .update
     end
 
+#===DELETE RECIPE======
     def delete_recipe
         prompt = TTY::Prompt.new
         current_recipe = recipe_instance(@recipe_choice)
         # binding.pry
         delete_rec = prompt.yes?("Are you sure you want to delete #{@recipe_choice}?")
-        # => true
-        if delete_rec
+
+        if delete_rec # => true
             puts "Recipe: #{@recipe_choice} has been deleted."
             puts "\n"
             current_recipe.delete
@@ -192,7 +217,9 @@ binding.pry
         end
     end
 
+#===QUIT=======
     def quit_program
+        puts "Thanks for using me!"
         exit
     end
 # binding.pry
