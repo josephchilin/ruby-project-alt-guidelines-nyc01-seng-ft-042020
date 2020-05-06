@@ -12,6 +12,12 @@ require_relative '../lib/recipe_ingredient'
 # RecipeIngredient (recipe_id, ingredient_id, ingredient_quantity)
 # Ingredient (name)
 
+# TO DO 
+
+# make edit recipe based off add new recipe
+# enable ingredient quantity
+# make search by name
+# make search by ingredient
 
 class CommandLineInterface
 
@@ -19,7 +25,7 @@ class CommandLineInterface
         puts "Welcome to Recipe Finder, your home for delicious food!"
     end
 
-# Starting menu navigation
+#====NAVIGATION
 
     def main_menu
         prompt = TTY::Prompt.new
@@ -57,10 +63,7 @@ class CommandLineInterface
         end
     end
 
-# TO DO 
-# make add new recipe
-# make edit recipe based off add new recipe
-
+#===RECIPE PAGE
     def recipe_page(recipe)
         recipe_name(recipe)
         recipe_ingredients(recipe)
@@ -68,12 +71,11 @@ class CommandLineInterface
         #name => make recipe_name method
         #ingredients => make display all ingredients method
                 # iterate through Recipe.WHATEVER.ingredients
-        # puts "Instruction: #{}"
         #instructions
                     # Recipe.WHATEVER.instruction
     end
 
-#---RECIPE PAGE HELPERS
+#===RECIPE PAGE HELPERS
     def recipe_instance(recipe_name)
         Recipe.find_by name: recipe_name
     end
@@ -88,7 +90,7 @@ class CommandLineInterface
         list = recipe.ingredients.map {|ingredient| ingredient.name}
         puts "Ingredients:"
         list.each do |ingredient_name|
-            puts ingredient_name.capitalize
+            puts ingredient_name.titleize
         end
 
         # binding.pry
@@ -109,7 +111,7 @@ class CommandLineInterface
     end
 
 
-#---INGREDIENTS HELPER METHODS
+#===INGREDIENTS HELPER METHODS
     def all_ingredients
         Ingredient.all.map do |ingredient|
             ingredient.name 
@@ -125,6 +127,7 @@ class CommandLineInterface
 #===VIEW RECIPES======
     def view_recipes
         prompt = TTY::Prompt.new
+# @recipe_choice carries name string of recipe chosen
         @recipe_choice = prompt.select("Choose Your recipe", all_recipes)
     #---recipe info-----
         recipe_page(@recipe_choice)
@@ -141,6 +144,7 @@ class CommandLineInterface
     def add_recipe
         prompt = TTY::Prompt.new
         recipe_name = prompt.ask("What is the name of your recipe?")
+        recipe_name = recipe_name.titleize
         Recipe.create(name: recipe_name, instruction: nil)
         add_ingredient
         recipe_instruction = prompt.ask("How do you cook #{recipe_name}?")
@@ -192,10 +196,44 @@ class CommandLineInterface
         end
     end
 
+#===EDIT HELPER METHODS====
+    def edit_menu
+        prompt = TTY::Prompt.new
+        prompt.select("What do you want to edit?") do |menu|
+            menu.choice "Edit name", -> {edit_name}
+            menu.choice "Edit ingredients", -> {edit_ingredients}
+            menu.choice "Edit instruction", -> {edit_instruction}
+            menu.choice "Back to menu", -> {nav_menu}
+        end
+    end
+
+    def edit_name
+        puts "EDIT NAME"
+        edit_menu
+    end
+
+    def edit_ingredients
+        puts "EDIT INGREDIENTS"
+        edit_menu
+    end
+
+    def edit_instruction
+        puts "EDIT INSTRUCTION"
+        edit_menu
+    end
 #===EDIT RECIPE========
     def edit_recipe
-        "EDIT RECIPE"
-        # .update
+#list of existing recipes
+    prompt = TTY::Prompt.new
+    edit_rec = prompt.yes?("Are you sure you want to edit #{@recipe_choice}?")
+    
+        if edit_rec #=> true
+            edit_menu
+        else
+            nav_menu
+        end
+
+    # .update
     end
 
 #===DELETE RECIPE======
