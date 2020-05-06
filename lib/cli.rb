@@ -203,7 +203,7 @@ class CommandLineInterface
         prompt.select("What do you want to edit?") do |menu|
             menu.choice "Edit name", -> {edit_name}
             menu.choice "Edit ingredients", -> {edit_ingredients}
-            menu.choice "Edit instruction", -> {edit_instruction}
+            menu.choice "Edit instructions", -> {edit_instruction}
             menu.choice "Back to menu", -> {nav_menu}
         end
     end
@@ -224,7 +224,10 @@ class CommandLineInterface
     end
 
     def edit_instruction
-        puts "EDIT INSTRUCTION"
+        new_instruction = @prompt.ask("What are the recipe's new instructions?")
+        current_recipe = recipe_instance(@recipe_choice)
+        current_recipe.update(instruction: new_instruction)
+        puts "Your recipe's instructions have been updated!"
         edit_menu
     end
 #===EDIT RECIPE========
