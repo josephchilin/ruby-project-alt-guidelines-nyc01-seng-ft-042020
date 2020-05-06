@@ -40,8 +40,6 @@ def main_menu
     prompt.select("What would you like to do?") do |menu|
         menu.choice "View recipes", -> {view_recipes}
         menu.choice "Add recipe", -> {add_recipe}
-        # menu.choice "Update recipe", 3
-        # menu.choice "Delete recipe", 4
     end
 end
 
@@ -53,7 +51,6 @@ def nav_menu
         menu.choice "Return to main menu", -> {main_menu}
     end
 end
-# find recipe => view recipe => edit or delete recipe or return to main menu
 
 # TO DO 
 # make formatted recipe page
@@ -62,8 +59,6 @@ end
 # make edit recipe based off add new recipe
 
 def recipe_page(recipe)
-    puts "Recipe: #{recipe}"
-    puts "Ingredients: "
     #name => make recipe_name method
     #ingredients => make display all ingredients method
                # iterate through Recipe.WHATEVER.ingredients
@@ -76,13 +71,19 @@ def recipe_page(recipe)
 
 end
 
+#---RECIPE PAGE HELPERS
+def recipe_instance(recipe_name)
+    Recipe.find_by name: recipe_name
+end
+
 def recipe_name(name)
     puts "Recipe: #{name}"
 end
 
 def recipe_instruction(name)
-    recipe_object = Recipe.find_by name: name
-    instruction = recipe_object.instruction
+    # recipe_object = Recipe.find_by name: name
+    recipe = recipe_instance(name)
+    instruction = recipe.instruction
     puts "Instructions: #{instruction}"
     # => returns instruction for given recipe string name
 end
@@ -117,18 +118,19 @@ end
 
 def delete_recipe
     prompt = TTY::Prompt.new
-    current_recipe = Recipe.find_by name: @recipe_choice
+    current_recipe = recipe_instance(@recipe_choice)
     # binding.pry
     delete_rec = prompt.yes?("Are you sure you want to delete #{@recipe_choice}?")
     # => true
     if delete_rec
         puts "Recipe: #{@recipe_choice} has been deleted."
+        puts "\n"
         current_recipe.delete
         main_menu
 
     else
         puts "Recipe: #{@recipe_choice} has not been deleted."
-
+        puts "\n"
         nav_menu
     end
 
