@@ -40,15 +40,18 @@ class CommandLineInterface
         prompt.select("What would you like to do?") do |menu|
             menu.choice "View recipes", -> {view_recipes}
             menu.choice "Add recipe", -> {add_recipe}
+            menu.choice "Exit program", -> {quit_program}
         end
     end
 
     def nav_menu
         prompt = TTY::Prompt.new
         prompt.select("What would you like to do now?") do |menu|
+            menu.choice "View recipes", -> {view_recipes}
+            menu.choice "Add recipe", -> {add_recipe}
             menu.choice "Edit recipe", -> {edit_recipe}
             menu.choice "Delete recipe", -> {delete_recipe}
-            menu.choice "Return to main menu", -> {main_menu}
+            menu.choice "Exit program", -> {quit_program}
         end
     end
 
@@ -115,7 +118,14 @@ class CommandLineInterface
     end
 
     def add_recipe
-        print "ADD RECIPE"
+        prompt = TTY::Prompt.new
+        recipe_name = prompt.ask("What is the name of your recipe?")
+        recipe_instruction = prompt.ask("How do you cook #{recipe_name}?")
+        puts "Thanks for submitting a recipe for #{recipe_name}!"
+        puts "\n"
+        Recipe.create(name: recipe_name, instruction: recipe_instruction)
+        nav_menu
+        # print "ADD RECIPE"
         # Recipe.create(name: "Fried Rice", instruction: "You make fried rice by frying rice.")
         # Ingredient.create(name: "rice")
         # RecipeIngredient.create(recipe: r1, ingredient: i3, ingredient_quantity: "4")
@@ -143,6 +153,8 @@ class CommandLineInterface
             nav_menu
         end
     end
-
+    def quit_program
+        exit
+    end
 # binding.pry
 end
