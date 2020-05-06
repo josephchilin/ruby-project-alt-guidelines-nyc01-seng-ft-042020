@@ -3,23 +3,31 @@ require_relative '../lib/ingredient'
 require_relative '../lib/recipe'
 require_relative '../lib/recipe_ingredient'
 
-# As a user, I want to add a new recipe. (create) DONE
-# As a user, I want to read recipes. (read) DONE
-# As a user, I want to update my recipe. (update)
-# As a user, I want to delete my recipe. (delete) DONE
-
 # Recipe (name, instruction)
 # RecipeIngredient (recipe_id, ingredient_id, ingredient_quantity)
 # Ingredient (name)
 
 # TO DO 
 
+# MVP
 # make edit recipe based off add new recipe
+# refactor all tty prompts
+
+# As a user, I want to add a new recipe. (create) DONE
+# As a user, I want to read recipes. (read) DONE
+# As a user, I want to update my recipe. (update)
+# As a user, I want to delete my recipe. (delete) DONE
+
+# EXTRA
 # enable ingredient quantity
 # make search by name
 # make search by ingredient
 
 class CommandLineInterface
+
+    def initialize
+        @prompt = TTY::Prompt.new
+    end
 
     def greet
         puts "Welcome to Recipe Finder, your home for delicious food!"
@@ -164,7 +172,7 @@ class CommandLineInterface
             new_recipe_ingredient = ingredient_instance(ingredient)
             Recipe.last.ingredients << new_recipe_ingredient
         else
-            new_recipe_ingredient =  Ingredient.create(name: ingredient)
+            new_recipe_ingredient = Ingredient.create(name: ingredient)
             Recipe.last.ingredients << new_recipe_ingredient
         end
     end
@@ -174,22 +182,15 @@ class CommandLineInterface
         ingredient = prompt.ask("What is your recipe's first ingredient?")
 
         ingredient_logic(ingredient)
-        # if all_ingredients.include?(ingredient)
-        #     new_recipe_ingredient = ingredient_instance(ingredient)
-        #     Recipe.last.ingredients << new_recipe_ingredient
-        # else
-        #     new_recipe_ingredient =  Ingredient.create(name: ingredient)
-        #     Recipe.last.ingredients << new_recipe_ingredient
-        # end
 
     # build more ingredients loop
         loop do
          more_ingredients = prompt.yes?("Does your recipe have more ingredients?")
         
             if more_ingredients #=> true
-            ingredient = prompt.ask("What is your recipe's next ingredient?")
+                ingredient = prompt.ask("What is your recipe's next ingredient?")
 
-            ingredient_logic(ingredient)
+                ingredient_logic(ingredient)
             else
                 break
             end
@@ -208,7 +209,12 @@ class CommandLineInterface
     end
 
     def edit_name
-        puts "EDIT NAME"
+        new_name = @prompt.ask("What is the new recipe name?")
+        new_name = new_name.titleize
+        current_recipe = recipe_instance(@recipe_choice)
+        current_recipe.update(name: new_name)
+        puts "Your recipe is now called #{new_name}!"
+        # binding.pry
         edit_menu
     end
 
@@ -223,9 +229,8 @@ class CommandLineInterface
     end
 #===EDIT RECIPE========
     def edit_recipe
-#list of existing recipes
-    prompt = TTY::Prompt.new
-    edit_rec = prompt.yes?("Are you sure you want to edit #{@recipe_choice}?")
+        prompt = TTY::Prompt.new
+        edit_rec = prompt.yes?("Are you sure you want to edit #{@recipe_choice}?")
     
         if edit_rec #=> true
             edit_menu
