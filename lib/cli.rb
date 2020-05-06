@@ -4,9 +4,9 @@ require_relative '../lib/recipe'
 require_relative '../lib/recipe_ingredient'
 
 # As a user, I want to add a new recipe. (create)
-# As a user, I want to read recipes. (read)
+# As a user, I want to read recipes. (read) DONE
 # As a user, I want to update my recipe. (update)
-# As a user, I want to delete my recipe. (delete)
+# As a user, I want to delete my recipe. (delete) DONE
 
 # Recipe (name, instruction)
 # RecipeIngredient (recipe_id, ingredient_id, ingredient_quantity)
@@ -45,13 +45,21 @@ def main_menu
     end
 end
 
+def nav_menu
+    prompt = TTY::Prompt.new
+    prompt.select("What would you like to do now?") do |menu|
+        menu.choice "Edit recipe", -> {edit_recipe}
+        menu.choice "Delete recipe", -> {delete_recipe}
+        menu.choice "Return to main menu", -> {main_menu}
+    end
+end
 # find recipe => view recipe => edit or delete recipe or return to main menu
 
 # TO DO 
-
-# search by name
-
 # make formatted recipe page
+    # make ingredients method
+# make add new recipe
+# make edit recipe based off add new recipe
 
 def recipe_page(recipe)
     puts "Recipe: #{recipe}"
@@ -93,12 +101,7 @@ def view_recipes
     recipe_instruction(@recipe_choice)
     # binding.pry
     puts "\n"
-#---nav menu--------
-    prompt.select("What would you like to do now?") do |menu|
-        menu.choice "Edit recipe", -> {edit_recipe}
-        menu.choice "Delete recipe", -> {delete_recipe}
-        menu.choice "Return to main menu", -> {main_menu}
-    end
+    nav_menu
 end
 
 def add_recipe
@@ -122,24 +125,12 @@ def delete_recipe
         puts "Recipe: #{@recipe_choice} has been deleted."
         current_recipe.delete
         main_menu
-    # #---nav menu--------
-    #         prompt.select("What would you like to do now?") do |menu|
-    #             menu.choice "Edit recipe", -> {edit_recipe}
-    #             menu.choice "Delete recipe", -> {delete_recipe}
-    #             menu.choice "Return to main menu", -> {main_menu}
-        # end
 
     else
         puts "Recipe: #{@recipe_choice} has not been deleted."
 
-#---nav menu--------
-        prompt.select("What would you like to do now?") do |menu|
-            menu.choice "Edit recipe", -> {edit_recipe}
-            menu.choice "Delete recipe", -> {delete_recipe}
-            menu.choice "Return to main menu", -> {main_menu}
-        end
+        nav_menu
     end
-
 
 end
 
