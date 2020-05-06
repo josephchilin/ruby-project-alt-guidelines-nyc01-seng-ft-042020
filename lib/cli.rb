@@ -136,7 +136,7 @@ class CommandLineInterface
     def view_recipes
         prompt = TTY::Prompt.new
 # @recipe_choice carries name string of recipe chosen
-        @recipe_choice = prompt.select("Choose Your recipe", all_recipes)
+        @recipe_choice = prompt.select("Choose your recipe", all_recipes)
     #---recipe info-----
         recipe_page(@recipe_choice)
         # binding.pry
@@ -218,8 +218,38 @@ class CommandLineInterface
         edit_menu
     end
 
+# add or remove ingredients?
+# if add shovel new ingredient into recipe object
+# if remove show menu of ingredients
+#       delete ingredient confirmation
+#       delete ingredient
+#       
     def edit_ingredients
-        puts "EDIT INGREDIENTS"
+        @prompt.select("Do you want to add or delete ingredients?") do |menu|
+            menu.choice "Add ingredient(s)", -> {add_ingredients}
+            menu.choice "Delete ingredient(s)", -> {delete_ingredients}
+        end
+        edit_menu
+    end
+
+    def add_ingredients
+        puts "ADD INGREDIENTS"
+    
+    end
+
+    def delete_ingredients
+        all_recipe_ingredients = recipe_ingredients(@recipe_choice)
+   
+        current_recipe = recipe_instance(@recipe_choice)
+        delete_choice = @prompt.select("Choose an ingredient to delete", all_recipe_ingredients)
+        current_ingredient = ingredient_instance(delete_choice)
+        delete_choice = delete_choice.titleize
+        
+        puts "#{delete_choice} has been deleted."
+
+        current_recipe.ingredients.delete(current_ingredient)
+
+        # binding.pry
         edit_menu
     end
 
