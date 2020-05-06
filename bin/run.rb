@@ -1,12 +1,10 @@
 require_relative '../config/environment'
 
 
-# cli = CommandLineInterface.new
+cli = CommandLineInterface.new
 
-# cli.greet
+cli.greet
 
-# prompt = TTY::Prompt.new
-
-# prompt.ask("What is your name?")
+cli.main_menu
 
 # binding.pry
