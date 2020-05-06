@@ -1,3 +1,12 @@
 require_relative '../config/environment'
 
-puts "Food is life test"
+
+# cli = CommandLineInterface.new
+
+# cli.greet
+
+# prompt = TTY::Prompt.new
+
+# prompt.ask("What is your name?")
+
+# binding.pry
