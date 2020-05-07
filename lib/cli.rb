@@ -22,8 +22,27 @@ class CommandLineInterface
     def initialize
         @prompt = TTY::Prompt.new
     end
-
+#=============================================================================================
     def greet
+        puts "                                                                 "
+        puts "                            _--'-.                               "
+        puts "                         .-'      '-.                            "
+        puts "                        |''--..      '-.                         "
+        puts "                        |      ''--..   '-.                      "
+        puts "                        |.-. .-'.    ''--..'.                    "
+        puts "                        |'./  -_'  .-.      |                    "
+        puts "                        |      .-. '.-'   .-'                    "
+        puts "                        '--..  '.'    .-  -.                     "
+        puts "                             ''--..   '_'   :                    "
+        puts "               _..------.._        ''--..   |                    "
+        puts "             .'     o      '.            ''-'                    "
+        puts "           .'   o       o    '.                                  "
+        puts "           | o       o     o  |                                  "
+        puts "           .''-..__o __ __.- '.                                  "
+        puts "           |      `````       |                                  "
+        puts "           '.``--........--'`.'                                  "
+        puts "           '.                .'                                  "
+        puts "            `'--------------'`                                   "
         puts "Welcome to Recipe Finder, your home for delicious food!"
     end
 
@@ -56,7 +75,7 @@ class CommandLineInterface
         @prompt.select("What would you like to do now?") do |menu|
             menu.choice "View recipes", -> {view_recipes}
             menu.choice "Add recipe", -> {add_recipe}
-            menu.choice "Edit recipe", -> {edit_recipe}
+            menu.choice "Edit recipe", -> {edit_menu}
             menu.choice "Delete recipe", -> {delete_recipe}
             menu.choice "Exit program", -> {quit_program}
         end
@@ -264,15 +283,15 @@ class CommandLineInterface
         edit_menu
     end
 #===EDIT RECIPE================================================================================
-    def edit_recipe
-        edit_rec = @prompt.yes?("Are you sure you want to edit #{@recipe_choice}?")
+    # def edit_recipe
+    #     edit_rec = @prompt.yes?("Are you sure you want to edit #{@recipe_choice}?")
     
-        if edit_rec #=> true
-            edit_menu
-        else
-            nav_menu
-        end
-    end
+    #     if edit_rec #=> true
+    #         edit_menu
+    #     else
+    #         nav_menu
+    #     end
+    # end
 
     # def edit_more
     #     edit_rec = @prompt.yes?("Do you have more edits to #{@recipe_choice}?")
