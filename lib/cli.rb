@@ -228,13 +228,26 @@ class CommandLineInterface
         @prompt.select("Do you want to add or delete ingredients?") do |menu|
             menu.choice "Add ingredient(s)", -> {add_ingredients}
             menu.choice "Delete ingredient(s)", -> {delete_ingredients}
+            menu.choice "Back to menu", -> {nav_menu}
         end
         edit_menu
     end
 
     def add_ingredients
-        puts "ADD INGREDIENTS"
-    
+        add_new = @prompt.ask("What ingredient would you like to add to this recipe?")
+        current_recipe = recipe_instance(@recipe_choice)
+
+        if all_ingredients.include?(add_new)
+            new_recipe_ingredient = ingredient_instance(add_new)
+            current_recipe.ingredients << new_recipe_ingredient
+        else
+            new_recipe_ingredient = Ingredient.create(name: add_new)
+            current_recipe.ingredients << new_recipe_ingredient
+        end
+        add_new = add_new.titleize
+        puts "#{add_new} has been added to this recipe!"
+
+        edit_menu
     end
 
     def delete_ingredients
