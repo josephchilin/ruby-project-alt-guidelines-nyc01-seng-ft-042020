@@ -8,7 +8,7 @@ require_relative '../lib/recipe_ingredient'
 # MVP
 # As a user, I want to add a new recipe. (create) DONE
 # As a user, I want to read recipes. (read) DONE
-# As a user, I want to update my recipe. (update)
+# As a user, I want to update my recipe. (update) DONE
 # As a user, I want to delete my recipe. (delete) DONE
 
 # EXTRA
@@ -17,7 +17,6 @@ require_relative '../lib/recipe_ingredient'
 # make search by ingredient
 
 #=============================================================================================
-
 class CommandLineInterface
 
     def initialize
@@ -86,7 +85,7 @@ class CommandLineInterface
         list = recipe.ingredients.map {|ingredient| ingredient.name}
         puts "Ingredients:"
         list.each do |ingredient_name|
-            puts ingredient_name.titleize
+            puts ingredient_name.downcase.titleize
         end
 
         # binding.pry
@@ -144,7 +143,8 @@ class CommandLineInterface
 #===ADD RECIPE================================================================================
     def add_recipe
         recipe_name = @prompt.ask("What is the name of your recipe?")
-        recipe_name = recipe_name.titleize
+        # binding.pry
+        recipe_name = recipe_name.downcase.titleize
         Recipe.create(name: recipe_name, instruction: nil)
 
         add_ingredient
@@ -202,7 +202,7 @@ class CommandLineInterface
 
     def edit_name
         new_name = @prompt.ask("What is the new recipe name?")
-        new_name = new_name.titleize
+        new_name = new_name.downcase.titleize
         puts "Your recipe is now called #{new_name}!"
                 # binding.pry
         @current_recipe.update(name: new_name)
@@ -235,7 +235,7 @@ class CommandLineInterface
             @current_recipe.ingredients << new_recipe_ingredient
         end
 
-        add_new = add_new.titleize
+        add_new = add_new.downcase.titleize
         
         puts "#{add_new} has been added to this recipe!"
 
@@ -247,7 +247,7 @@ class CommandLineInterface
    
         delete_choice = @prompt.select("Choose an ingredient to delete", all_recipe_ingredients)
         current_ingredient = ingredient_instance(delete_choice)
-        delete_choice = delete_choice.titleize
+        delete_choice = delete_choice.downcase.titleize
         
         puts "#{delete_choice} has been deleted."
 
